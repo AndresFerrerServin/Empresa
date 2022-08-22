@@ -2,6 +2,7 @@
 
 $(document).ready(function () {
     GetAll();
+    PuestoGetAll();
 
 });
 
@@ -43,7 +44,6 @@ function GetAll() {
 }
 
 function PuestoGetAll() {
-    $("#ddlEstados").empty();
     $.ajax({
         type: 'GET',
         url: 'http://localhost:9943/api/puesto/GetAll',
@@ -54,10 +54,6 @@ function PuestoGetAll() {
                     + puesto.IdPuesto + '">'
                     + puesto.Nombre + '</option>');
             });
-        },
-        error: function (result) {
-            alert('Error en la consulta.' + result.responseJSON.ErrorMessage);
-
         }
     });
 }
@@ -73,7 +69,7 @@ function Add(empleado) {
             $('#ModalForm').modal('hide');
             $('#myModal').modal();
 
-            PuestoGetAll();
+            GetAll();
 
         },
         error: function (result) {
@@ -86,7 +82,7 @@ function ShowModal() {
 
     $('#ModalForm').modal('show');
 
-    PuestoGetAll();
+    GetAll();
 
     InitializeControls();
     $('#lblTitulo').modal('Agregar Empleado');
@@ -148,46 +144,36 @@ function GetById(Id_NumEmp) {
         url: 'http://localhost:9943/api/empleado/getById/' + Id_NumEmp,
         success: function (result) {
             $('#txtId_NumEmp').val(result.Object.Id_NumEmp);
+            
             $('#txtNombre').val(result.Object.Nombre);
             $('#txtApellido_Paterno').val(result.Object.Apellido_Paterno);
             $('#txtApellido_Materno').val(result.Object.Apellido_Materno);
             $('#ddlIdPuesto').val(result.Object.Puesto.IdPuesto);
 
-
             $('#ModalForm').modal('show');
-            $('#lblTitulo').modal('Modificar Empleado');
         },
         error: function (result) {
             alert('Error en la consulta.' + result.responseJSON.ErrorMessage);
         }
 
+
     });
 
-} 
+}
+
 
 function Update(empleado) {
-    var empleado = {
-        Id_NumEmp: $('#txtId_NumEmp').val(),
-        Nombre: $('#txtNombre').val(),
-        ApellidoPaterno: $('#txtApellido_Paterno').val(),
-        ApellidoMaterno: $('#txtApellido_Materno').val(),
-        Puesto: {
-            IdPuesto: $('#ddlIdPuesto').val()
-        }
-    }
+
     $.ajax({
-        type: 'PUT',
-        url: 'http://localhost:9943/api/empleado/update/',
-        dataType: 'json',
-        data: empleado,
+        type: 'POST',
+        url: 'http://localhost:9943/api/empleado/update/' + empleado.Id_NumEmp,
+        datatype: 'json',
+        data: JSON.stringify(empleado),
+        contentType: 'application/json; charset=utf-8',
         success: function (result) {
-
-            $('#ModalForm').modal('hide');
             $('#myModal').modal();
-
-            PuestoGetAll();
+            $('#ModalForm').modal('hide');
             GetAll();
-            Console(respond);
         },
         error: function (result) {
             alert('Error en la consulta.' + result.responseJSON.ErrorMessage);

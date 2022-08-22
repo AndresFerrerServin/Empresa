@@ -40,7 +40,7 @@ namespace SL.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("api/empleado/update/{Id_NumEmp}")]
         public IHttpActionResult Put(int Id_NumEmp, [FromBody] ML.Empleado empleado)
         {
